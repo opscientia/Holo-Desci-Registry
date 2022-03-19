@@ -3,7 +3,7 @@ import './App.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 import GoogleLogin from 'react-google-login';
-// import FacebookLogin from 'react-facebook-login';
+import FacebookLogin from 'react-facebook-login';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {
@@ -241,18 +241,9 @@ const responseGoogle = (response) => {
   
   console.log(response);
 }
-// const responseFacebook = (response) => {
-//   let expirationDateString = (new Date(response.data_access_expiration_time * 1000)).toString()
-//   console.log(response)
-//   let message = 'IMPORTANT! Please do not submit this JWT yet as it is not expired. It is below so you can copy it. Please return after it expires at ' 
-//   + expirationDateString 
-//   + ' and paste it:\n\n\n\n'
-//   + JSON.stringify(response)
-//   console.log(message);
-//   // setMessage(message)
-//   setMessage('Support for Facebook is still pending...')
-
-// }
+const responseFacebook = (response) => {
+  console.log(response)
+}
 
 const AuthenticationFlow = (props) => {
 
@@ -316,12 +307,12 @@ const AuthenticationFlow = (props) => {
     let message = JWTObject.header.raw + '.' + JWTObject.payload.raw
     let payloadIdx = Buffer.from(JWTObject.header.raw).length + 1
     console.log(JWTObject.payload.parsed[credentialClaim])
-    let sandwich = await sandwichIDWithBreadFromContract(JWTObject.payload.parsed[credentialClaim], vjwt);
+    let sandwich = await sandwichIDWithBreadFromContract(JWTObject.payload.parsed[credentialClaim], vjwt)
     console.log(sandwich, JWTObject.payload.raw)
     let [startIdx, endIdx] = searchForPlainTextInBase64(Buffer.from(sandwich, 'hex').toString(), JWTObject.payload.raw)
 
     console.log(vjwt, ethers.BigNumber.from(sig), message, payloadIdx, startIdx, endIdx, sandwich)
-    let tx = await vjwt.verifyMe(ethers.BigNumber.from(sig), message, payloadIdx, startIdx, endIdx, '0x'+sandwich);
+    let tx = await vjwt.verifyMe(ethers.BigNumber.from(sig), message, payloadIdx, startIdx, endIdx, '0x'+sandwich)
     
     setTxHash(tx.hash)
     return tx
@@ -388,6 +379,12 @@ const AuthenticationFlow = (props) => {
                     onSuccess={r=>navigate(`/google/token/id_token=${r.tokenId}`)}
                     onFailure={responseGoogle}
                   />
+                  <FacebookLogin
+                    appId="1420829754999380"
+                    autoLoad={false}
+                    fields="name,email,picture"
+                    // onClick={componentClicked}
+                callback={responseFacebook} />
                 {/*
                 <p>Authenticate via</p>
                 <GoogleLogin
