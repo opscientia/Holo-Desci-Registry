@@ -1,0 +1,28 @@
+import { useState, useEffect, useRef } from 'react'
+
+export const Modal = (props) => {
+  // stop display when clicked outside
+  const ref = useRef(null)
+  useEffect(() => {
+      function handleClick(event) {
+          if (ref.current && !ref.current.contains(event.target)) {
+              props.setVisible(false)
+          }
+      }
+      
+      document.addEventListener('mousedown', handleClick)
+      return () => document.removeEventListener('mousedown', handleClick)
+  }, [ref]);
+  
+  return <div style={{display : props.visible ? 'block' : 'none'}}>
+          <div className={'bg-img x-section wf-section ' + (props.blur ? 'blur' : '')} style={{position : 'fixed', zIndex: 1000, left: '0px', top: '0px', width:'100vw'}}>
+            <div className='x-container w-container'>
+              <div ref={ref} className={'x-card small ' + (props.blur ? 'large-blur' : '')}>
+                <div className='card-heading'>
+                  <div text={'hey'}>{props.children}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  }

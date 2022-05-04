@@ -1,0 +1,34 @@
+{
+  "production": {
+    "IdentityAggregator": {
+      "polygon": "0xe7d38C12EC231414B49F7cB4695ddAc908F3A852"
+    },
+    "WTFBios": {
+      "polygon": "0xc45857b71223b6154f6bc488c8c32bD19c21f791"
+    },
+    "VerifyJWT": {
+      "ropsten": {
+        "orcid" : "0xdF10310d2C72F5358b19bF6A7C817Ec4570b270f"
+      },
+      "polygon": {
+        "REMINDER-ORCID-HERE-IS-OUTDATED" : "THANX-YOU-FOR-THE-REMINDER",
+        "orcid" : "0x2779550E47349711d3CD895aFd8aE315ee9BC597",
+        "google" : "0x1362fe03c3c338f2e7dfaA44205f2B047f2C430D"
+      }
+    }
+  },
+  "test": {
+    "IdentityAggregator": {
+      "ethereum": "0xE8D9D160E5aeef45a6d0b3dcB50F88c2b792e452"
+    },
+    "VerifyJWT": {
+      "ethereum": {
+        "orcid" : "0x31CA6ac542a1ff1746E899f772D12E371589918e",
+        "google" : "0x68c1E96125F45284B7682AfD81a5BE534a9F352D"
+      }
+    },
+    "WTFBios": {
+      "ethereum": "0x87CFb14F111bF30484E5b703EF0Ec30a9bcDb337"
+    }
+  }
+}

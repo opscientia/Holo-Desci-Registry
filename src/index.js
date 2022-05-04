@@ -1,35 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { Provider, createClient } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
-
-const desiredChain = "gnosis";
-const desiredChainId = 100;
-
-// Set up wagmi connectors
-const client = createClient({
-  autoConnect: true,
-  connectors({ chainId }) {
-    return [
-      new InjectedConnector({
-        options: {
-          chainId: desiredChainId,
-        },
-      }),
-    ];
-  },
-});
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider client={client}>
-      <App />
-    </Provider>
+    <App />
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
