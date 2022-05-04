@@ -1,10 +1,9 @@
 // Uncomment below when you want to use it -- just made it empty for faster loading and to increase traffic on Lit protocol needlessly. In the future, it should be lazy-loaded instead of commented out
 
-
 // import React, { useState, useEffect } from 'react'
 // import { Integration } from 'lit-ceramic-sdk'
-// import contractAddresses from '../contractAddresses.json'
-// import abi from '../abi/VerifyJWT.json'
+// import contractAddresses from '../constants/contractAddresses.json'
+// import abi from '../constants/abi/VerifyJWT.json'
 // import { providers } from 'ethers'
 // const { ethers } = require('ethers')
 
@@ -91,7 +90,7 @@
 //             } catch {
 //                 setStreamContent('Error: You don\'t have access to it') // this never gets called javascript error handling is terrible - hacky workaround is done instead of this
 //             }
-            
+
 //         }
 //     }, [streamID, buttonPressed])
 
@@ -101,11 +100,10 @@
 //         <button class='cool-button' onClick={async ()=> await changeAccess(account, true)}>Grant (Me) Access</button>
 //         <button class='cool-button' onClick={async ()=> await changeAccess(account, false)}>Revoke (My) Access</button>
 //         <button class='cool-button' onClick={()=>setButtonPressed( buttonPressed +1 ) }>View Credentials</button>
-//         {streamID ? `Saved to streamID ${streamID} ,` : null} 
+//         {streamID ? `Saved to streamID ${streamID} ,` : null}
 //         <i>Content :</i>{streamContent && streamContent.startsWith('something went wrong decrypting:') ? <b>Error: Could not access the content</b> : <p style={{fontSize:'12px'}}>{decodeJWT(streamContent)}</p>}
 //     </>
 // }
 
-
 // Uncomment above when you want to use it -- just made it empty for faster loading and to increase traffic on Lit protocol needlessly. In the future, it should be lazy-loaded instead of commented
-export const LitCeramic = () => <></>
+export const LitCeramic = () => <></>;
