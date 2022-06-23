@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useContractWrite } from "wagmi";
 import { truncateAddress } from "../utils/ui-helpers.js";
+import { ChainSwitcherModal } from "./chain-switcher";
 import { Modal } from "./atoms/Modal.js";
 import contractAddresses from "../constants/contractAddresses.json";
+import Error from "./errors";
 import abi from "../constants/abi/WTFBios.json";
 
 export const EditProfileButton = (props) => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setFormVisible] = useState(false);
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
+  const [chainSwitcherShowing, setChainSwitcherShowing] = useState(false);
+  const [chain, setChain] = useState("");
+  const [error, setError] = useState("");
   const {
     data: txResp,
     isError,
@@ -16,20 +21,28 @@ export const EditProfileButton = (props) => {
     writeAsync: wtfSetNameAndBio,
   } = useContractWrite(
     {
-      addressOrName: contractAddresses.WTFBios,
+      addressOrName: contractAddresses[chain]?.WTFBios,
       contractInterface: abi,
     },
     "setNameAndBio" // Name of function that will be called
   );
 
-  const submitNameBio = async () => {
-    await wtfSetNameAndBio({ args: [name, bio] });
-    setVisible(false);
-  };
+  const handleSubmit = async () => {
+    try {
+      await wtfSetNameAndBio({ args: [name, bio] });
+      }
+      catch(e){
+        setError("Error " + e)
+      }
+      setFormVisible(false);
+    }
 
   return (
     <>
-      <a className="edit-icon-link w-inline-block" onClick={() => setVisible(true)}>
+      <div style={{position: "fixed", top: 0, left: 0, zIndex:10001}}>
+        <ChainSwitcherModal visible={chainSwitcherShowing} setVisible={setChainSwitcherShowing} onChainChange={(newChain)=>{setChain(newChain);setChainSwitcherShowing(false); setFormVisible(true)}} />
+      </div>
+      <a className="edit-icon-link w-inline-block" onClick={() => setChainSwitcherShowing(true)}>
         <div className="edit-icon w-embed">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -43,7 +56,7 @@ export const EditProfileButton = (props) => {
         </div>
       </a>
 
-      <Modal visible={visible} setVisible={setVisible}>
+      <Modal visible={visible} setVisible={setFormVisible}>
         <div className="card-heading">
           <h3 className="h3 no-margin">Name / Pseudonym</h3>
         </div>
@@ -81,10 +94,10 @@ export const EditProfileButton = (props) => {
           <br /> If you don't want that, try making a new address or being pseudonymous 😎
         </p>
         <div className="x-container w-container" style={{ justifyContent: "space-between" }}>
-          <a onClick={submitNameBio} className="x-button" style={{ width: "39%" }}>
+          <a onClick={handleSubmit} className="x-button" style={{ width: "39%" }}>
             Submit
           </a>
-          <a onClick={() => setVisible(false)} className="x-button secondary" style={{ width: "39%" }}>
+          <a onClick={() => setFormVisible(false)} className="x-button secondary" style={{ width: "39%" }}>
             Cancel
           </a>
         </div>
