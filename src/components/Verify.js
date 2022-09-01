@@ -47,6 +47,38 @@ const Verify = (props) => {
             Your info will be encrypted, but to be safe, only use a computer that is
             solely yours or that will be used only by people you trust.
           </p>
+          <h2>Requirements</h2>
+          <div style={{ textAlign: 'left' }}>
+            <ul>
+              <li>
+                <p>Make sure you have a crypto wallet (such as{" "}
+                    <a 
+                      href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en' 
+                      target='_blank'
+                      rel='noreferrer'
+                      className='simple-peach-link'
+                    >
+                      MetaMask
+                    </a>){" "}
+                  installed
+                </p>
+              </li>
+              <li>
+                <p>
+                  Make sure you have the{" "}
+                    <a 
+                      href='https://chrome.google.com/webstore/detail/holonym/oehcghhbelloglknnpdgoeammglelgna?hl=en' 
+                      target='_blank'
+                      rel='noreferrer'
+                      className='simple-peach-link'
+                    >
+                      Holonym browser extension
+                    </a>{" "}
+                  installed
+                </p>
+                </li>
+            </ul>
+          </div>
           <div
             style={{
               maxWidth: "400px",
