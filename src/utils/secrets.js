@@ -3,6 +3,7 @@
  */
 
 const extensionId = "oehcghhbelloglknnpdgoeammglelgna";
+// const extensionId = 'cilbidmppfndfhjafdlngkaabddoofea'; // for tests
 
 // Max length of encrypt-able string using RSA-OAEP with SHA256 where
 // modulusLength == 4096: 446 characters.
