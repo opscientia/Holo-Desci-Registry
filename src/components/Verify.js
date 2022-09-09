@@ -26,7 +26,7 @@ const Verify = (props) => {
       localStorage.setItem("holoTempSecret", msg);
       signMessage({ message: msg });
     } else {
-      setError("Could not retrieve message to sign.");
+      setError("Could not retrieve message to sign. Please make sure you're connected to your wallet.");
     }
   }
 
