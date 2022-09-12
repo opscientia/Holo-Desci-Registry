@@ -17,6 +17,7 @@ const instructionStyles = {
 // Display success message, and retrieve user credentials to store in browser
 const Verified = () => {
   const [error, setError] = useState();
+  const [loading, setLoading] = useState();
   const [registered, setRegistered] = useState(false);
   const [creds, setCreds] = useState();
 
@@ -25,6 +26,7 @@ const Verified = () => {
       return;
     }
     setError(undefined);
+    setLoading(true);
     try {
       const secret = localStorage.getItem("holoTempSecret");
       const resp = await fetch(
@@ -35,6 +37,7 @@ const Verified = () => {
       if (data.error) {
         setError(data.error);
       } else {
+        setLoading(false);
         const credsTemp = data.user;
         setCreds(credsTemp)
         localStorage.removeItem("holoTempSecret");
@@ -88,6 +91,8 @@ const Verified = () => {
     <>
       {error ? (
         <p>{error}</p>
+      ) : loading ? (
+        <p>Loading credentials...</p>
       ) : (
         <div>
           <h3 style={{ textAlign: "center" }}>Almost finished!</h3>
