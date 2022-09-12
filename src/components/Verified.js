@@ -4,10 +4,6 @@ import { IncrementalMerkleTree } from "@zk-kit/incremental-merkle-tree";
 import { 
   storeCredentials,
   getIsHoloRegistered,
-  storeProof,
-  poseidonHash,
-  createSmallLeaf,
-  encryptForServer
 } from "../utils/secrets";
 import { zkIdVerifyEndpoint } from '../constants/api';
 
@@ -22,7 +18,6 @@ const instructionStyles = {
 const Verified = () => {
   const [error, setError] = useState();
   const [registered, setRegistered] = useState(false);
-
   const [creds, setCreds] = useState();
 
   async function getCredentials() {
@@ -50,65 +45,6 @@ const Verified = () => {
       setError(`Error: ${err.message}`);
     }
   }
-
-  // ---------------------
-  // Get proofs
-  // ---------------------
-
-  useEffect(() => {
-    async function getAddLeafProof() {
-      const args = {
-        creds: creds.countryCode,
-        secret: creds.countryCodeSecret,
-      };
-      // NOTE: Use AWS KMS in production
-      const { encryptedMessage: encryptedArgs } = await encryptForServer(JSON.stringify(args));
-      const resp = await fetch(
-        `${zkIdVerifyEndpoint}/proofs/addSmallLeaf?args=${encryptedArgs}`
-      )
-      const data = await resp.json()
-      // shape of response: { data: smallLeafProof: { scheme: 'g16', curve: 'bn128', proof: [Object], inputs: [Array] },  newSecret: newSecretAsBuffer.toString("hex") }
-      storeProof(data.data)
-    }
-    // TODO: Move PoKoPoML to a different page
-    // PoKoPoML == Proof of Knowledge of Preimage of Member Leaf
-    async function getPoKoPoML() {
-      // NOTE: Start both servers before running this test
-      const issuer = Buffer.from(process.env.ADDRESS.replace("0x", ""), "hex");
-      const creds = 2;
-      const secret = "0x" + "11".repeat(16);
-      const leaf = await createSmallLeaf(
-        issuer,
-        Buffer.from("00".repeat(26) + "0002", "hex"),
-        Buffer.from(secret.replace("0x", ""), "hex")
-      );
-      const tree = new IncrementalMerkleTree(poseidonHash, 32, "0", 2);
-      tree.insert(leaf);
-      const index = tree.indexOf(leaf);
-      const proof = tree.createProof(index);
-      const { root, siblings: path } = proof;
-      const directionSelector = proof.pathIndices.map((n) => !!n);
-      const args = {
-        creds,
-        secret,
-        root,
-        directionSelector,
-        path,
-      };
-      const { encryptedMessage, sharded } = await encryptForServer(JSON.stringify(args));
-      const encryptedArgs = Array.isArray(encryptedMessage)
-        ? JSON.stringify(encryptedMessage)
-        : encryptedMessage;
-      const resp = await fetch(
-        `${zkIdVerifyEndpoint}/proofs/proveKnowledgeOfPreimageOfMemberLeaf?args=${encryptedArgs}&sharded=${sharded}`
-      );
-      const data = await resp.json();
-      // shape of response: { data: proofOfKnowledgeOfPreimage: { scheme: 'g16', curve: 'bn128', proof: [Object], inputs: [Array] } }
-      // TODO: Store proof
-    }
-    getAddLeafProof()
-    // getPoKoPoML()
-  }, [creds])
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
