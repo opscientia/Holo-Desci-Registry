@@ -78,6 +78,8 @@ async function encryptForExtension(message) {
  * @param {Object} credentials creds object from Holonym server
  */
 export async function storeCredentials(credentials) {
+  console.log('storing credentials...')
+  console.log(credentials)
   const { encryptedMessage, sharded } = await encryptForExtension(credentials);
 
   // Send encrypted credentials to Holonym extension
@@ -113,4 +115,18 @@ export function chunk(arr, chunkSize) {
     out.push(chunk);
   }
   return out;
+}
+
+export function requestProof(proofType = 'addSmallLeaf-country') {
+  return new Promise((resolve) => {
+    const payload = {
+      command: "holoGenerateProof",
+      proofType: proofType,
+    };
+    const callback = (resp) => {
+      resolve(resp)
+    }
+    // eslint-disable-next-line no-undef
+    chrome.runtime.sendMessage(extensionId, payload, callback);
+  })
 }

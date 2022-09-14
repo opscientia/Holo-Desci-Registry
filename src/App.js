@@ -6,8 +6,9 @@ import AuthenticationFlow from "./components/authentication-flow.js";
 import Registry from "./components/registry.js";
 import { HomeLogo } from "./components/logo.js";
 import { Lookup } from "./components/lookup.js";
-import Verify from "./components/Verify";
-import Verified from "./components/Verified";
+import Verify from "./components/verify";
+import Verified from "./components/verified";
+import Proofs from './components/proofs';
 import React, { useEffect, useState } from "react";
 import WebFont from "webfontloader";
 import Address from "./components/atoms/Address.js";
@@ -113,6 +114,7 @@ function App() {
           <Route path={"/myholo"} element={myHoloPage} />
           <Route path={"/zk-id/verify"} element={<Verify />} />
           <Route path={"/zk-id/verified"} element={<Verified />} />
+          <Route path={"/zk-id/proofs/:proofType"} element={<Proofs />} />
           <Route path={"/chainswitchertest"} element={<ChainSwitcher />} />
           <Route path={"/chainswitchermodaltest"} element={<ChainSwitcherModal />} />
         </Routes>
