@@ -18,6 +18,7 @@ export const EditProfileButton = (props) => {
     data: txResp,
     isError,
     isLoading,
+    reset,
     writeAsync: wtfSetNameAndBio,
   } = useContractWrite(
     {

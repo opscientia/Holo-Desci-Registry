@@ -28,10 +28,10 @@ const Icons = (props) => {
   return <>
     <div>
     
-      {props.holo['mumbai'][props.web2service] && <PolygonIcon />}
-      {props.holo['gnosis'][props.web2service] && <GnosisIcon />}
+      {props.holo?.['mumbai']?.[props.web2service] && <PolygonIcon />}
+      {props.holo?.['gnosis']?.[props.web2service] && <GnosisIcon />}
 
-      <img src={props.holo["gnosis"][props.web2service] || props.holo["mumbai"][props.web2service] ? CircleWavyCheck : CircleWavy} 
+      <img src={props.holo?.["gnosis"]?.[props.web2service] || props.holo?.["mumbai"]?.[props.web2service] ? CircleWavyCheck : CircleWavy} 
         className="card-status"
         loading="lazy"
         style={{marginLeft:"10px"}}
@@ -96,8 +96,8 @@ const MyHolo = (props) => {
                 <div className="x-card small">
                   <div className="card-heading">
                     <h3 className="h3 no-margin">
-                      {holo['gnosis'].name || holo['mumbai'].name || "Your Name"}
-                      <p className="no-margin">{holo['gnosis'].bio || holo['mumbai'].bio || "Your bio"}</p>
+                      {holo['gnosis']?.name || holo['mumbai']?.name || "Your Name"}
+                      <p className="no-margin">{holo['gnosis']?.bio || holo['mumbai']?.bio || "Your bio"}</p>
                     </h3>
                     <EditProfileButton {...props} holo={holo} />
                   </div>
@@ -118,8 +118,8 @@ const MyHolo = (props) => {
                   <div className="card-text-wrapper">
                     <div className="card-text-div">
                       <img src={DiscordLogo} loading="lazy" alt="" className="card-logo" />
-                      <div className="card-text">{`@${holo['gnosis'].discord || holo['mumbai'].discord || "username"}`}</div>
-                      <DiscordLoginButton creds={holo['gnosis'].discord || holo['mumbai'].discord} desiredChain={desiredChain} />
+                      <div className="card-text">{`@${holo['gnosis']?.discord || holo['mumbai']?.discord || "username"}`}</div>
+                      <DiscordLoginButton creds={holo['gnosis']?.discord || holo['mumbai']?.discord} desiredChain={desiredChain} />
                     </div>
                     <Icons web2service="discord" holo={holo} />
                   </div>
@@ -137,8 +137,8 @@ const MyHolo = (props) => {
                   <div className="card-text-wrapper">
                     <div className="card-text-div">
                       <img src={Orcid} loading="lazy" alt="" className="card-logo" />
-                      <div className="card-text">{holo['gnosis'].orcid || holo['mumbai'].orcid || "xxxx-xxxx-xxxx-xxxx"}</div>
-                      <ORCIDLoginButton creds={holo['gnosis'].orcid || holo['mumbai'].orcid} desiredChain={desiredChain} />
+                      <div className="card-text">{holo['gnosis']?.orcid || holo['mumbai']?.orcid || "xxxx-xxxx-xxxx-xxxx"}</div>
+                      <ORCIDLoginButton creds={holo['gnosis']?.orcid || holo['mumbai']?.orcid} desiredChain={desiredChain} />
                     </div>
                     <Icons web2service="orcid" holo={holo} />
                   </div>
@@ -146,8 +146,8 @@ const MyHolo = (props) => {
                   <div className="card-text-wrapper">
                     <div className="card-text-div">
                       <img src={TwitterLogo} loading="lazy" alt="" className="card-logo" />
-                      <div className="card-text">{`@${holo['gnosis'].twitter || holo['mumbai'].twitter || "TwitterHandle"}`}</div>
-                      <TwitterLoginButton creds={holo['gnosis'].twitter || holo['mumbai'].twitter} desiredChain={desiredChain} />
+                      <div className="card-text">{`@${holo['gnosis']?.twitter || holo['mumbai']?.twitter || "TwitterHandle"}`}</div>
+                      <TwitterLoginButton creds={holo['gnosis']?.twitter || holo['mumbai']?.twitter} desiredChain={desiredChain} />
                     </div>
                     <Icons web2service="twitter" holo={holo} />
                   </div>
@@ -155,8 +155,8 @@ const MyHolo = (props) => {
                   <div className="card-text-wrapper">
                     <div className="card-text-div">
                       <img src={GithubLogo} loading="lazy" alt="" className="card-logo" />
-                      <div className="card-text">{`@${holo['gnosis'].github || holo['mumbai'].github || "githubusername"}`}</div>
-                      <GitHubLoginButton creds={holo['gnosis'].github || holo['mumbai'].github} desiredChain={desiredChain} />
+                      <div className="card-text">{`@${holo['gnosis']?.github || holo['mumbai']?.github || "githubusername"}`}</div>
+                      <GitHubLoginButton creds={holo['gnosis']?.github || holo['mumbai']?.github} desiredChain={desiredChain} />
                     </div>
                     <Icons web2service="github" holo={holo} />
                   </div>

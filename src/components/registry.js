@@ -4,7 +4,7 @@ import { SearchBar } from "./search-bar.js";
 import { Modal } from "./atoms/Modal.js";
 import { useNavigate } from "react-router-dom";
 import wtf from "../wtf-configured";
-import { desiredChain } from "../constants/desiredChain";
+import { getHoloFromAddress } from '../utils/holoSearch'
 import { useAccount } from "wagmi";
 
 // Wraps everything on the registry screen with style
@@ -17,15 +17,6 @@ const Wrapper = (props) => {
       <div className="spacer-small"></div>
     </>
   );
-};
-
-const defaultHolo = {
-  name: "",
-  bio: "",
-  twitter: "",
-  google: "",
-  github: "",
-  orcid: "",
 };
 
 let hasBeenRun = false;
@@ -42,35 +33,12 @@ const Registry = (props) => {
   const setHolosAsyncFromAddresses = async (addresses) => {
     let tmpHolos = [];
     for (const address of addresses) {
-      let holo_ = {};
-      try {
-        // Try getting holo from cache. If it fails, call chain directly.
-        console.log(`Retrieving holo for address ${address}...`);
-        const response = await fetch(`https://sciverse.id/api/getHolo?address=${address}`);
-        holo_ = (await response.json())[desiredChain];
-        console.log(`Retrieved holo for address ${address}...`);
-        console.log(holo_);
-      } catch (err) {
-        wtf.setProviderURL({ gnosis: "https://xdai-rpc.gateway.pokt.network" });
-        holo_ = (await wtf.getHolo(address))[desiredChain];
-      }
-      const newHolo = {
-        ...defaultHolo,
-        google: holo_.google,
-        orcid: holo_.orcid,
-        github: holo_.github,
-        discord: holo_.discord,
-        twitter: holo_.twitter,
-        name: holo_.name || "Anonymous",
-        bio: holo_.bio || "No information provided",
-        address: address,
-      };
-      const holoIsEmpty = Object.values(newHolo).every((x) => !x);
-      console.log("NEW HOLO", newHolo);
-      console.log("abc");
+      const holo_ = await getHoloFromAddress(address)
+      const gnosisHoloIsEmpty = !holo_?.gnosis || Object.values(holo_.gnosis).every((x) => !x);
+      const mumbaiHoloIsEmpty = !holo_?.mumbai || Object.values(holo_.mumbai).every((x) => !x);
+      const holoIsEmpty = gnosisHoloIsEmpty && mumbaiHoloIsEmpty
       if (!holoIsEmpty) {
-        tmpHolos.push(newHolo);
-        // remove duplicates
+        tmpHolos.push(holo_)
         tmpHolos = [...new Set([...tmpHolos])];
         console.log("NEW SET", tmpHolos);
         setHolos(tmpHolos);
