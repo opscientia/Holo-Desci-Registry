@@ -192,6 +192,13 @@ const InnerAuthenticationFlow = (props) => {
       // for some reason, onChainCreds updates later on Gnosis, so adding another fallback option for taking it off-chain (otherwise it will say verification failed when it probably hasn't failed; it just isn't yet retrievable)
       console.log("NU CREDS", JWTObject.payload.parsed[props.credentialClaim]);
       let creds = onChainCreds || JWTObject.payload.parsed[props.credentialClaim];
+
+      try {
+        fetch(`https://sciverse.id/api/updateDatabase?${account.address}`);
+      } catch (err) {
+        console.log(err)
+      }
+
       return onChainCreds ? (
         <FinalScreen {...props} creds={creds}/>
       ) : (

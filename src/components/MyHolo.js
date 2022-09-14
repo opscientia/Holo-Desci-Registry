@@ -166,6 +166,7 @@ const MyHolo = (props) => {
                 <div className="spacer-medium"></div>
                 {/* Share button: copies link and makes QR for it */}
                 <div
+                  id="share-button"
                   className="x-wrapper small-center animation0"
                   onClick={() => {
                     navigator.clipboard.writeText(myUrl);

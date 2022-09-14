@@ -1160,7 +1160,7 @@ p {
 }
 
 .card-heading {
-  position: relative;
+  /* position: relative; */
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;

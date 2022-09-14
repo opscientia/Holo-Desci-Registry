@@ -6,6 +6,8 @@ import AuthenticationFlow from "./components/authentication-flow.js";
 import Registry from "./components/registry.js";
 import { HomeLogo } from "./components/logo.js";
 import { Lookup } from "./components/lookup.js";
+import Verify from "./components/Verify";
+import Verified from "./components/Verified";
 import React, { useEffect, useState } from "react";
 import WebFont from "webfontloader";
 import Address from "./components/atoms/Address.js";
@@ -109,6 +111,8 @@ function App() {
           {/* <Route path='/private' element={<LitCeramic stringToEncrypt={JWTObject.header.raw + '.' + JWTObject.payload.raw}/>} /> */}
           <Route path={"/"} element={myHoloPage} />
           <Route path={"/myholo"} element={myHoloPage} />
+          <Route path={"/zk-id/verify"} element={<Verify />} />
+          <Route path={"/zk-id/verified"} element={<Verified />} />
           <Route path={"/chainswitchertest"} element={<ChainSwitcher />} />
           <Route path={"/chainswitchermodaltest"} element={<ChainSwitcherModal />} />
         </Routes>
