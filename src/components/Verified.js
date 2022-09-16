@@ -1,61 +1,61 @@
 import { useState, useEffect } from "react";
 import { useAccount, useSignMessage } from "wagmi";
-import { storeCredentials, getIsHoloRegistered } from "../utils/secrets";
+import { IncrementalMerkleTree } from "@zk-kit/incremental-merkle-tree";
+import { 
+  storeCredentials,
+  getIsHoloRegistered,
+} from "../utils/secrets";
 import { zkIdVerifyEndpoint } from '../constants/api';
 
+const instructionStyles = { 
+  marginBottom: '10px',
+  fontSize: "16px", 
+  fontFamily: "Montserrat, sans-serif", 
+  lineHeight: "1.5" 
+}
+
 const testCreds = {
-  bigCredsSecret: "0x39c50479f506505ac61a4c027d9489d1",
-  bigCredsSignature:
-    "0xbaa4d3802f655c159fb810c1678f2f498f1b0cee835ab983135816cfd2e7b449209e86382db2e7014345a0731b74da694c7ccc0a48f36bab04272d8af53008ed1c",
-  birthdate: "",
-  birthdateSecret: "0x3ea47c99774b28650195094095674356",
-  birthdateSignature:
-    "0xb7192ed3b27e0a746e26cc4bd67a6b9f10e1c42a4274948a916c664b7b09e5ef21ba100d2ac96c53646bf1114cd4394a784206f7535d6d7e6bcf85271abc21501b",
-  city: "",
-  citySecret: "0x53387a2938c2e68e3f0b288df1a4e158",
-  citySignature:
-    "0xb8b1f97823ab2fffdb3b128c177d37531966d459342848bd56295fc792b477f01fb476ef7a2eed33293dc94e3445bc93e7596c909372276d0dde9b5227b323af1c",
-  completedAt: "2022-08-19T16:43:08.000Z",
-  completedAtSecret: "0xa9c767df8ce37b9ee93a8de5c345c0b4",
-  completedAtSignature:
-    "0x90826f603a409b7c3d8e315ab79dabdbf1f20f30d5d1ae6a7bcf72252b0903c468855637e930da55f8e0af831b832ab78d1ee6d91cef0b65a3f03e4c2437b0a91b",
-  countryCode: "US",
-  countryCodeSecret: "0xa7b063a76d69133bd60140c4f8e6a9c9",
-  countryCodeSignature:
-    "0x0fb5e166d127a1d07b2594ddeccad80d0439972e2832b328cb6d8ec724c434b22bb61d05ab872346bd8c38d3a6e88e1ec1ca3cc7adbf73c37674280686c17ffb1c",
-  firstName: "",
-  firstNameSecret: "0x21b4c98dbb9ac588170fec34275a9d6c",
-  firstNameSignature:
-    "0xd3fd3aef76684cc5fa077892e01a17c4ec45817c9f45cbfbb4d478b0191816841e3f36f60fa343e32537456a48525bb55905cd250575158d898b62b7c2aa568c1c",
-  lastName: "",
-  lastNameSecret: "0x02093892c8a92c615c462acbc9045974",
-  lastNameSignature:
-    "0x2080bb5f81d1402e20ec70a117d831a4d0dccc1cc977f92fda9be1045a5a60975a6c8ca886e6164cd73db10a4f81be3ff094e0893190b30d3deb4dfc74d63a391c",
-  middleInitial: "",
-  middleInitialSecret: "0x76d9f5a0e9d3d228820af55dd322ac0a",
-  middleInitialSignature:
-    "0xdd2b343ff3da3370c81ee4ff9c16f93e5770f38b8b69c4793f76977d58a9d4467a6727332007e9aa06ab99e58a5b919f678d38db76819677594eef4755b7796a1c",
-  postalCode: "",
-  postalCodeSecret: "0xb7234c6312a0d097574a83dceffb466f",
-  postalCodeSignature:
-    "0xd4bc00697126de5f5fe55d781129112218a990024516a14f68ad20837805aa5c630979b57988982dd227b549dd6045faa7f7683f6d76240d6665691b3aac54f11c",
-  streetAddr1: "",
-  streetAddr1Secret: "0xdd56cd2e7366637e57ebbec829cc606a",
-  streetAddr1Signature:
-    "0xeff5c5ffb0c6d91df362e0d42228c3d414c023128d89b369c8d2e3f3220802de1d52f2451fc1e0b6078495bf1fdc6e63bcc32c4bf74b4906bb6e67e0830b77d91c",
-  streetAddr2: "",
-  streetAddr2Secret: "0x1418307cc4cd15ecb876a33d1acb11f7",
-  streetAddr2Signature:
-    "0x507a7561db883ab20988d126447caa7cdfffcdde0d33f26d6727dd0c9497bcec72b75f7e8547fa965d45a2caad00e508b9c555377f24fc17474a8afbb19450631c",
-  subdivision: "",
-  subdivisionSecret: "0xfadce709103d67379ac17cd80cc983cc",
-  subdivisionSignature:
-    "0xf7764f5fd2af096a5b0472e8a4da871f6b7d356807c892f69e02ce1370f6807804326b158ba686a30b64e00346b3c57060ea328f2d1fb61764bf62c183ea45b61b",
-};
+  bigCredsSecret:"0x4704a39e96c1753b525d8734a37685b8",
+  bigCredsSignature:"0x07138e4c38e8d8541920a087641017f4d32dcf1d100e94db46d1fd67fa59edf23ab7514a2b9cdc613d7264485764e79aa01d243dfba0b87171675f5219aae7651c",
+  birthdate:"",
+  birthdateSecret:"0xea018caeef0868e40df71042674d9571",
+  birthdateSignature:"0xfef878a2b56c2f2ee97f9bb8cf9044eb45d12ae31ed58df4516b0ec770865b612b3eef8cb3349eb1e5b20320254b72da0935f345942c86413d0d3652580308f11c",
+  city:"",
+  citySecret:"0xb7410acfa87e091899bb2520aaccb952",
+  citySignature:"0xb6613dae0ccbc01df57630f4f2f1fc4a83a7d8f552f5cad0ab7e0799b245e3f334c30e9d2494744834f3616117505457c147c1681600235b846e1d25f7a748eb1b",
+  completedAt:"2022-09-13T16:01:32.000Z",
+  completedAtSecret:"0x5e1813edf42b12a189071dce66df7431",
+  completedAtSignature:"0x75ee057a593ee8e344a59933a61a8b98d8eee71d8350cd98550e9b21ae9f0d5f08341755ade3c661d6230613074fab4f67089f4891ad8d610ff7d9dae09de37b1c",
+  countryCode:2,
+  countryCodeSecret:"0xc9e8bd44fd3048d48dd998e2f4f942e2",
+  countryCodeSignature:"0xe3675c60c9350a8f75c5f87bad7b0ebca7623111f8017ceafffd34f4e4cdbdee6c3b99cd89437f42f520461ae3c9d635ed79ff4b3ad3fc8337351e9a5de289e71b",
+  firstName:"",
+  firstNameSecret:"0xd628b62fb0211227eb67139428e7bb91",
+  firstNameSignature:"0xde771f71e36234204956d455a5a24693981e08eeda8bb6ae6f3ac19884806e7e4cc60d30ce6c93a487128a63a52f01bc00514fdaf469dbfeddcf1a521caf577d1b",
+  lastName:"",
+  lastNameSecret:"0x341114169815216144907cde9d374782",
+  lastNameSignature:"0x91fa8986ebbc5dd08f6c7b822d4e38615df3cfa21a1c82cd395edb79ae1a4b5c5e7f17654d37d40008ba795b3145b5d1d63a8fd88a95c5a8016de1ad114d7b111c",
+  middleInitial:"",
+  middleInitialSecret:"0x84b09e309bd234ab828eb13b99c632eb",
+  middleInitialSignature:"0xe83c5a1b1a964dc1dff37bcf541b67e2edbb0ac792588c9147db1774d21cc0ba511095f24bb060a08983285eff7318ea9fc0f99a0807f06a6bd42819270bd4851b",
+  postalCode:"",
+  postalCodeSecret:"0x8c4c2120ab081a4f59c2a51ee58d7268",
+  postalCodeSignature:"0x4f660493d8a876874ef224ccdbfcfc1d3cc9ff8aaf41d8cbd6ec3e70e69192342d54d6ef42eec09cf0929b4d2517bef5d1cc1205b27a827ce0f6b8dda6dfac7f1c",
+  streetAddr1:"",
+  streetAddr1Secret:"0x3a375984fdbf3005c5808b9d58ab6031",
+  streetAddr1Signature:"0x4d941f55a8d1aa341f1759f640c3691d6730795d4a11d3cc41bcd1947b7713302fabdb635e8852d2574b282aa34241b90c6ce174f1eaf3c496810f441bc988211b",
+  streetAddr2:"",
+  streetAddr2Secret:"0x89d80c3f71379209efe92ddbb7afd5f9",
+  streetAddr2Signature:"0x085669ce798f48a19b54e2220959449dd174b066d669864a27a8a911719bf9103cf19ba9c962f2c65efc34fb74ec575debeb30e958767da925f49da49cc26f231b",
+  subdivision:"",
+  subdivisionSecret:"0xb5f9f06ee5efb1b21b84b091b0ad6a5d",
+  subdivisionSignature:"0x72ca188237c4e3f6c3e22f17fed7f3851706ffdbc295c978b2dd40f7955c21dc32a1502430e24da8bea790925d0b2edfbd200637de8d540b5970b0a4323918931c"
+}
 
 // Display success message, and retrieve user credentials to store in browser
 const Verified = () => {
   const [error, setError] = useState();
+  const [loading, setLoading] = useState();
   const [registered, setRegistered] = useState(false);
   const [creds, setCreds] = useState();
 
@@ -64,6 +64,7 @@ const Verified = () => {
       return;
     }
     setError(undefined);
+    setLoading(true);
     try {
       const secret = localStorage.getItem("holoTempSecret");
       const resp = await fetch(
@@ -74,6 +75,7 @@ const Verified = () => {
       if (data.error) {
         setError(data.error);
       } else {
+        setLoading(false);
         const credsTemp = data.user;
         setCreds(credsTemp)
         localStorage.removeItem("holoTempSecret");
@@ -96,6 +98,10 @@ const Verified = () => {
   }
 
   useEffect(() => {
+
+    // For testing
+    // storeCredentials(testCreds);
+
     async function func() {
       const isRegistered = await getIsHoloRegistered()
       // Only setRegistered at this first check. If user had not registered before 
@@ -117,12 +123,6 @@ const Verified = () => {
       setError(`Error: ${err.message}`);
     }
   }, []);
-
-  useEffect(() => {
-  }, []);
-
-  // For testing
-  // storeCredentials(testCreds);
 
   return (
     <>
