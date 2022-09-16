@@ -131,22 +131,32 @@ const Verified = () => {
       ) : (
         <div>
           <h3 style={{ textAlign: "center" }}>Almost finished!</h3>
+          <br />
           <div style={{ maxWidth: "600px", fontSize: "16px" }}>
-            <p>Final steps:</p>
+          <i>
             <ol>
               {!registered && (
+                
+                  <li>
+                    <p>
+                      Open the Holonym extension, and create an account by entering a
+                      password (be sure to remember it)
+                    </p>
+                  </li>
+                )}
                 <li>
-                  Open the Holonym extension, and create an account by entering a
-                  password (be sure to remember it)
+                  <p>
+                  Login to the Holonym popup{" "}
+                  {!registered && "(after creating an account)"}
+                  </p>
                 </li>
-              )}
-              <li>
-                Login to the Holonym popup{" "}
-                {!registered && "(after creating an account)"}
-              </li>
-              <li>Confirm your credentials</li>
-            </ol>
-            <p>The Holonym extension will then store your encrypted credentials.</p>
+                <p>
+                <li>Confirm your credentials</li>
+                </p>
+              </ol>
+            </i>
+            <br />
+            <h4>The Holonym extension will then store your encrypted credentials.</h4>
           </div>
         </div>
       )}
