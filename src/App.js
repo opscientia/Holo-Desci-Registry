@@ -7,7 +7,7 @@ import Registry from "./components/registry.js";
 import { HomeLogo } from "./components/logo.js";
 import { Lookup } from "./components/lookup.js";
 import Verify from "./components/verify";
-import Verified from "./components/verified";
+import Verified from "./components/Verified";
 import Proofs from './components/proofs';
 import React, { useEffect, useState } from "react";
 import WebFont from "webfontloader";
