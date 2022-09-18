@@ -5,8 +5,8 @@ import assert from "assert";
 import { ethers } from 'ethers';
 import { initialize } from 'zokrates-js';
 
-const extensionId = "oehcghhbelloglknnpdgoeammglelgna";
-// const extensionId = 'cilbidmppfndfhjafdlngkaabddoofea'; // for tests
+// const extensionId = "oehcghhbelloglknnpdgoeammglelgna";
+const extensionId = 'cilbidmppfndfhjafdlngkaabddoofea'; // for tests
 
 // Max length of encrypt-able string using RSA-OAEP with SHA256 where
 // modulusLength == 4096: 446 characters.
@@ -117,7 +117,7 @@ export function chunk(arr, chunkSize) {
   return out;
 }
 
-export function requestProof(proofType = 'addSmallLeaf-country') {
+export function requestProof(proofType = 'addLeaf-country') {
   return new Promise((resolve) => {
     const payload = {
       command: "holoGenerateProof",

@@ -18,7 +18,7 @@ const Proofs = () => {
 
     // Special case: Lobby3. Requires 2 proofs
     if (proofType === 'lobby3') {
-      requestProof('addSmallLeaf-country').then((proof) => {
+      requestProof('addLeaf-country').then((proof) => {
         // TODO: Call smart contract
       }).then(() => requestProof('PoKoPoML-country')).then((proof) => {
         // TODO: Call smart contract
@@ -39,7 +39,7 @@ const Proofs = () => {
           <div>
             <p>For Lobby3 Proof of Residence, you need to generate 2 proofs</p>
             <ol>
-              <li>addSmallLeaf-country</li>
+              <li>addLeaf-country</li>
               <li>PoKoPoML-country</li>
             </ol>
           </div>
