@@ -128,6 +128,8 @@ const Verified = () => {
     <>
       {error ? (
         <p>{error}</p>
+      ) : loading ? (
+        <h3 style={{ textAlign: "center" }}>Loading...</h3>
       ) : (
         <div>
           <h3 style={{ textAlign: "center" }}>Almost finished!</h3>
