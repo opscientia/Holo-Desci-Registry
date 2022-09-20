@@ -2,11 +2,11 @@
  * Helpers for interacting with Holonym browser extension and for zokrates
  */
 import assert from "assert";
-import { ethers } from 'ethers';
-import { initialize } from 'zokrates-js';
+import { ethers } from "ethers";
+import { initialize } from "zokrates-js";
 
-// const extensionId = "oehcghhbelloglknnpdgoeammglelgna";
-const extensionId = 'cilbidmppfndfhjafdlngkaabddoofea'; // for tests
+const extensionId = "oehcghhbelloglknnpdgoeammglelgna";
+// const extensionId = "cilbidmppfndfhjafdlngkaabddoofea"; // for tests
 
 // Max length of encrypt-able string using RSA-OAEP with SHA256 where
 // modulusLength == 4096: 446 characters.
@@ -78,8 +78,8 @@ async function encryptForExtension(message) {
  * @param {Object} credentials creds object from Holonym server
  */
 export async function storeCredentials(credentials) {
-  console.log('storing credentials...')
-  console.log(credentials)
+  console.log("storing credentials...");
+  console.log(credentials);
   const { encryptedMessage, sharded } = await encryptForExtension(credentials);
 
   // Send encrypted credentials to Holonym extension
@@ -117,16 +117,33 @@ export function chunk(arr, chunkSize) {
   return out;
 }
 
-export function requestProof(proofType = 'addLeaf-country') {
+export function requestProof(proofType = "addLeaf-country") {
   return new Promise((resolve) => {
     const payload = {
       command: "holoGenerateProof",
       proofType: proofType,
     };
     const callback = (resp) => {
-      resolve(resp)
-    }
+      resolve(resp);
+    };
     // eslint-disable-next-line no-undef
     chrome.runtime.sendMessage(extensionId, payload, callback);
-  })
+  });
 }
+
+// export async function createLeaf(
+//   issuer,
+//   secret,
+//   countryCode,
+//   subdivision,
+//   completedAt,
+//   birthdate) {
+//   const zokCode = `import "hashes/poseidon/poseidon" as poseidon;
+//   def main(field address, private field secret, private field countryCode, private field subdivision, private field completedAt, private field birthdate) -> field {
+//       return poseidon([address, secret, countryCode, subdivision, completedAt, birthdate]);
+//   }`
+//   const zokProvider = await initialize()
+//   const artifacts = zokProvider.compile(zokCode);
+//   const { witness, output } = zokProvider.computeWitness(artifacts, ["2"]);
+//   const keypair = zokProvider.setup(artifacts.program);
+// }
