@@ -1,9 +1,6 @@
 /**
  * Helpers for interacting with Holonym browser extension and for zokrates
  */
-import assert from "assert";
-import { ethers } from "ethers";
-import { initialize } from "zokrates-js";
 
 const extensionId = "oehcghhbelloglknnpdgoeammglelgna";
 // const extensionId = "cilbidmppfndfhjafdlngkaabddoofea"; // for tests
@@ -130,20 +127,3 @@ export function requestProof(proofType = "addLeaf-country") {
     chrome.runtime.sendMessage(extensionId, payload, callback);
   });
 }
-
-// export async function createLeaf(
-//   issuer,
-//   secret,
-//   countryCode,
-//   subdivision,
-//   completedAt,
-//   birthdate) {
-//   const zokCode = `import "hashes/poseidon/poseidon" as poseidon;
-//   def main(field address, private field secret, private field countryCode, private field subdivision, private field completedAt, private field birthdate) -> field {
-//       return poseidon([address, secret, countryCode, subdivision, completedAt, birthdate]);
-//   }`
-//   const zokProvider = await initialize()
-//   const artifacts = zokProvider.compile(zokCode);
-//   const { witness, output } = zokProvider.computeWitness(artifacts, ["2"]);
-//   const keypair = zokProvider.setup(artifacts.program);
-// }
