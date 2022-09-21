@@ -105,11 +105,10 @@ export function chunk(arr, chunkSize) {
   return out;
 }
 
-export function requestProof(proofType = "addLeaf-country") {
+export function requestCredentials() {
   return new Promise((resolve) => {
     const payload = {
-      command: "holoGenerateProof",
-      proofType: proofType,
+      command: "getHoloCredentials",
     };
     const callback = (resp) => {
       resolve(resp);

@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { initialize } from "zokrates-js";
 import { IncrementalMerkleTree } from "@zk-kit/incremental-merkle-tree";
-import { zkIdVerifyEndpoint } from "../constants/api";
+import { zkIdVerifyEndpoint, serverAddress } from "../constants/server";
 
 const poseidonCodeQuinary = `import "hashes/poseidon/poseidon" as poseidon;
 def main(field n1, field n2, field n3, field n4, field n5) -> field {
@@ -54,7 +54,7 @@ initialize().then((zokratesProvider) => {
  * (Forked from holo-merkle-utils)
  * Serializes createProof outputs to ZoKrates format
  */
-function serializeProof(proof, hash) {
+export function serializeProof(proof, hash) {
   // Insert the digest of the leaf at every level:
   let digest = proof.leaf;
   for (let i = 0; i < proof.siblings.length; i++) {
@@ -127,6 +127,68 @@ export async function createLeaf(
 
 /**
  * @param {string} issuer Hex string
+ * @param {number} countryCode
+ * @param {string} subdivision UTF-8
+ * @param {string} completedAt Hex string representing 3 bytes
+ * @param {string} birthdate Hex string representing 3 bytes
+ * @param {string} oldSecret Hex string representing 16 bytes
+ * @param {string} newSecret Hex string representing 16 bytes
+ */
+export async function onAddLeafProof(
+  issuer,
+  countryCode,
+  subdivision,
+  completedAt,
+  birthdate,
+  oldSecret,
+  newSecret
+) {
+  if (!zokProvider) {
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    // TODO: Make this more sophisticated. Wait for zokProvider to be set or for timeout (e.g., 10s)
+    await sleep(5000);
+  }
+
+  const signedLeaf = await createLeaf(
+    serverAddress,
+    oldSecret,
+    countryCode,
+    subdivision,
+    completedAt,
+    birthdate
+  );
+  const newLeaf = await createLeaf(
+    serverAddress,
+    newSecret,
+    countryCode,
+    subdivision,
+    completedAt,
+    birthdate
+  );
+  const resp = await fetch(`${zkIdVerifyEndpoint}/proving-keys/onAddLeaf`);
+  const provingKey = new Uint8Array(await resp.json());
+  const args = [
+    ethers.BigNumber.from(signedLeaf).toString(),
+    ethers.BigNumber.from(newLeaf).toString(),
+    ethers.BigNumber.from(issuer).toString(),
+    ethers.BigNumber.from(countryCode).toString(),
+    ethers.BigNumber.from(new TextEncoder("utf-8").encode(subdivision)).toString(),
+    ethers.BigNumber.from(completedAt).toString(),
+    ethers.BigNumber.from(birthdate).toString(),
+    ethers.BigNumber.from(oldSecret).toString(),
+    ethers.BigNumber.from(newSecret).toString(),
+  ];
+  const { witness, output } = zokProvider.computeWitness(onAddLeafArtifacts, args);
+  const proof = zokProvider.generateProof(
+    onAddLeafArtifacts.program,
+    witness,
+    provingKey
+  );
+  return proof;
+}
+
+/**
+ * @param {string} issuer Hex string
  * @param {string} secret Hex string representing 16 bytes
  * @param {number} countryCode
  * @param {string} subdivision UTF-8
@@ -169,55 +231,6 @@ export async function lobby3Proof(
   const { witness, output } = zokProvider.computeWitness(lobby3ProofArtifacts, args);
   const proof = zokProvider.generateProof(
     lobby3ProofArtifacts.program,
-    witness,
-    provingKey
-  );
-  return proof;
-}
-
-/**
- * @param {string} signedLeaf Number represented as string
- * @param {string} newLeaf Number represented as string
- * @param {string} issuer Hex string
- * @param {number} countryCode
- * @param {string} subdivision UTF-8
- * @param {string} completedAt Hex string representing 3 bytes
- * @param {string} birthdate Hex string representing 3 bytes
- * @param {string} oldSecret Hex string representing 16 bytes
- * @param {string} newSecret Hex string representing 16 bytes
- */
-export async function onAddLeafProof(
-  signedLeaf,
-  newLeaf,
-  issuer,
-  countryCode,
-  subdivision,
-  completedAt,
-  birthdate,
-  oldSecret,
-  newSecret
-) {
-  if (!zokProvider) {
-    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-    // TODO: Make this more sophisticated. Wait for zokProvider to be set or for timeout (e.g., 10s)
-    await sleep(5000);
-  }
-  const resp = await fetch(`${zkIdVerifyEndpoint}/proving-keys/onAddLeaf`);
-  const provingKey = new Uint8Array(await resp.json());
-  const args = [
-    ethers.BigNumber.from(signedLeaf).toString(),
-    ethers.BigNumber.from(newLeaf).toString(),
-    ethers.BigNumber.from(issuer).toString(),
-    ethers.BigNumber.from(countryCode).toString(),
-    ethers.BigNumber.from(new TextEncoder("utf-8").encode(subdivision)).toString(),
-    ethers.BigNumber.from(completedAt).toString(),
-    ethers.BigNumber.from(birthdate).toString(),
-    ethers.BigNumber.from(oldSecret).toString(),
-    ethers.BigNumber.from(newSecret).toString(),
-  ];
-  const { witness, output } = zokProvider.computeWitness(onAddLeafArtifacts, args);
-  const proof = zokProvider.generateProof(
-    onAddLeafArtifacts.program,
     witness,
     provingKey
   );
@@ -370,6 +383,3 @@ async function testLobby3Proof() {
   console.log(proof);
   return proof;
 }
-
-// console.log("calling testOnAddLeafProof...");
-// testOnAddLeafProof();

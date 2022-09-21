@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAccount, useSignMessage } from "wagmi";
 import { IncrementalMerkleTree } from "@zk-kit/incremental-merkle-tree";
 import { storeCredentials, getIsHoloRegistered } from "../utils/secrets";
-import { zkIdVerifyEndpoint } from "../constants/api";
+import { zkIdVerifyEndpoint } from "../constants/server";
 
 const instructionStyles = {
   marginBottom: "10px",
