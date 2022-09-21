@@ -16,10 +16,16 @@ import { serverAddress } from "../constants/server";
 const Proofs = () => {
   const params = useParams();
   const [credentials, setCredentials] = useState();
+  const [error, setError] = useState();
 
   async function handleLobby3Proofs() {
     const creds = await requestCredentials();
     setCredentials(creds);
+    if (!creds) {
+      setError(
+        "Could not retrieve credentials for proof. Please make sure you have the Holonym extension installed."
+      );
+    }
 
     // onAddLeafProof
     // TODO: GENERATE NEW SECRET WITHIN EXTENSION AND THEN SEND IT WITH THE REST OF CREDS
@@ -87,16 +93,18 @@ const Proofs = () => {
   return (
     <>
       <div>
-        <h3 style={{ textAlign: "center" }}>Generate Proof(s)</h3>
+        <h3 style={{ textAlign: "center" }}>Generate Proofs</h3>
         <div style={{ maxWidth: "600px", fontSize: "16px" }}>
-          {!credentials && (
-            <div>
+          <div>
+            {error ? (
+              <p>Error: {error}</p>
+            ) : (
               <p>
                 When you see the Holonym popup, please confirm that you would like to
                 share your credentials with this web page
               </p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </>
