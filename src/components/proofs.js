@@ -37,11 +37,8 @@ const Proofs = () => {
     const birthdate = getDateAsHexString(creds.completedAt);
 
     // onAddLeafProof
-    // TODO: GENERATE NEW SECRET WITHIN EXTENSION AND THEN SEND IT WITH THE REST OF CREDS
     const oldSecret = creds.secret;
-    const array = new Uint8Array(16);
-    window.crypto.getRandomValues(array);
-    const newSecret = ethers.BigNumber.from(array).toHexString();
+    const newSecret = creds.newSecret;
     const oalProof = await onAddLeafProof(
       serverAddress,
       creds.countryCode,
