@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAccount, useSignMessage } from "wagmi";
-import { zkIdVerifyEndpoint } from '../constants/api';
+import { zkIdVerifyEndpoint } from "../constants/server";
 
 const Verify = (props) => {
   const { data: account } = useAccount();
@@ -13,7 +13,9 @@ const Verify = (props) => {
   // Get secret message to sign from server
   async function getSecretMessage() {
     try {
-      const resp = await fetch(`${zkIdVerifyEndpoint}/initialize?address=${account.address}`);
+      const resp = await fetch(
+        `${zkIdVerifyEndpoint}/initialize?address=${account.address}`
+      );
       return (await resp.json()).message;
     } catch (err) {
       console.log(err);
@@ -26,7 +28,9 @@ const Verify = (props) => {
       localStorage.setItem("holoTempSecret", msg);
       signMessage({ message: msg });
     } else {
-      setError("Could not retrieve message to sign. Please make sure you're connected to your wallet.");
+      setError(
+        "Could not retrieve message to sign. Please make sure you're connected to your wallet."
+      );
     }
   }
 
@@ -48,35 +52,36 @@ const Verify = (props) => {
             solely yours or that will be used only by people you trust.
           </p>
           <h2>Requirements</h2>
-          <div style={{ textAlign: 'left' }}>
+          <div style={{ textAlign: "left" }}>
             <ul>
               <li>
-                <p>Make sure you have a crypto wallet (such as{" "}
-                    <a 
-                      href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en' 
-                      target='_blank'
-                      rel='noreferrer'
-                      className='simple-peach-link'
-                    >
-                      MetaMask
-                    </a>){" "}
-                  installed
+                <p>
+                  Make sure you have a crypto wallet (such as{" "}
+                  <a
+                    href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="simple-peach-link"
+                  >
+                    MetaMask
+                  </a>
+                  ) installed
                 </p>
               </li>
               <li>
                 <p>
                   Make sure you have the{" "}
-                    <a 
-                      href='https://chrome.google.com/webstore/detail/holonym/oehcghhbelloglknnpdgoeammglelgna?hl=en' 
-                      target='_blank'
-                      rel='noreferrer'
-                      className='simple-peach-link'
-                    >
-                      Holonym browser extension
-                    </a>{" "}
+                  <a
+                    href="https://chrome.google.com/webstore/detail/holonym/oehcghhbelloglknnpdgoeammglelgna?hl=en"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="simple-peach-link"
+                  >
+                    Holonym browser extension
+                  </a>{" "}
                   installed
                 </p>
-                </li>
+              </li>
             </ul>
           </div>
           <div
