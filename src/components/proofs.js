@@ -10,11 +10,12 @@ const Proofs = () => {
   const params = useParams();
   const [requestedProofs, setRequestedProofs] = useState();
 
+  // TODO: Get credentials from extension. Call proof functions. Send to smart contract.
+
   // useEffect(() => {
   //   if (requestedProofs) return;
   //   const proofType = params.proofType;
   //   setRequestedProofs(true);
-
   //   // Special case: Lobby3. Requires 2 proofs
   //   if (proofType === "lobby3") {
   //     requestProof("addLeaf-country")

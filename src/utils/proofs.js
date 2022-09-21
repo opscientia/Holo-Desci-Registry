@@ -1,8 +1,7 @@
 import { ethers } from "ethers";
 import { initialize } from "zokrates-js";
 import { IncrementalMerkleTree } from "@zk-kit/incremental-merkle-tree";
-import lobby3ProvingKey from "./lobby3Proof.proving.key.json";
-import onAddLeafProvingKey from "./onAddLeaf.proving.key.json";
+import { zkIdVerifyEndpoint } from "../constants/api";
 
 const poseidonCodeQuinary = `import "hashes/poseidon/poseidon" as poseidon;
 def main(field n1, field n2, field n3, field n4, field n5) -> field {
@@ -153,6 +152,8 @@ export async function lobby3Proof(
     // TODO: Make this more sophisticated. Wait for zokProvider to be set or for timeout (e.g., 10s)
     await sleep(5000);
   }
+  const resp = await fetch(`${zkIdVerifyEndpoint}/proving-keys/lobby3`);
+  const provingKey = new Uint8Array(await resp.json());
   const args = [
     ethers.BigNumber.from(issuer).toString(),
     ethers.BigNumber.from(countryCode).toString(),
@@ -166,8 +167,11 @@ export async function lobby3Proof(
     indices,
   ];
   const { witness, output } = zokProvider.computeWitness(lobby3ProofArtifacts, args);
-  const pk = new Uint8Array(lobby3ProvingKey.data);
-  const proof = zokProvider.generateProof(lobby3ProofArtifacts.program, witness, pk);
+  const proof = zokProvider.generateProof(
+    lobby3ProofArtifacts.program,
+    witness,
+    provingKey
+  );
   return proof;
 }
 
@@ -198,6 +202,8 @@ export async function onAddLeafProof(
     // TODO: Make this more sophisticated. Wait for zokProvider to be set or for timeout (e.g., 10s)
     await sleep(5000);
   }
+  const resp = await fetch(`${zkIdVerifyEndpoint}/proving-keys/onAddLeaf`);
+  const provingKey = new Uint8Array(await resp.json());
   const args = [
     ethers.BigNumber.from(signedLeaf).toString(),
     ethers.BigNumber.from(newLeaf).toString(),
@@ -210,8 +216,11 @@ export async function onAddLeafProof(
     ethers.BigNumber.from(newSecret).toString(),
   ];
   const { witness, output } = zokProvider.computeWitness(onAddLeafArtifacts, args);
-  const pk = new Uint8Array(onAddLeafProvingKey.data);
-  const proof = zokProvider.generateProof(onAddLeafArtifacts.program, witness, pk);
+  const proof = zokProvider.generateProof(
+    onAddLeafArtifacts.program,
+    witness,
+    provingKey
+  );
   return proof;
 }
 
@@ -361,3 +370,6 @@ async function testLobby3Proof() {
   console.log(proof);
   return proof;
 }
+
+// console.log("calling testOnAddLeafProof...");
+// testOnAddLeafProof();
