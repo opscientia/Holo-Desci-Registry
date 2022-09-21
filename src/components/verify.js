@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAccount, useSignMessage } from "wagmi";
-import { zkIdVerifyEndpoint } from "../constants/server";
+import { zkIdVerifyEndpoint } from "../constants/misc";
 
 const Verify = (props) => {
   const { data: account } = useAccount();

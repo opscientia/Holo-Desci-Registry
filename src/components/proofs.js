@@ -5,13 +5,15 @@ import { useAccount, useSignMessage } from "wagmi";
 import { IncrementalMerkleTree } from "@zk-kit/incremental-merkle-tree";
 import { requestCredentials } from "../utils/secrets";
 import {
+  getStateAsHexString,
+  getDateAsHexString,
   serializeProof,
   poseidonHashQuinary,
   createLeaf,
   onAddLeafProof,
   lobby3Proof,
 } from "../utils/proofs";
-import { serverAddress } from "../constants/server";
+import { serverAddress } from "../constants/misc";
 
 const Proofs = () => {
   const params = useParams();
@@ -19,6 +21,7 @@ const Proofs = () => {
   const [error, setError] = useState();
 
   async function handleLobby3Proofs() {
+    console.log("requesting credentials...");
     const creds = await requestCredentials();
     setCredentials(creds);
     if (!creds) {
@@ -26,6 +29,12 @@ const Proofs = () => {
         "Could not retrieve credentials for proof. Please make sure you have the Holonym extension installed."
       );
     }
+    console.log("credentials...");
+    console.log(creds);
+
+    const subdivision = getStateAsHexString(creds.subdivision);
+    const completedAt = getDateAsHexString(creds.completedAt);
+    const birthdate = getDateAsHexString(creds.completedAt);
 
     // onAddLeafProof
     // TODO: GENERATE NEW SECRET WITHIN EXTENSION AND THEN SEND IT WITH THE REST OF CREDS
@@ -36,21 +45,23 @@ const Proofs = () => {
     const oalProof = await onAddLeafProof(
       serverAddress,
       creds.countryCode,
-      creds.subdivision,
-      creds.completedAt,
-      creds.birthdate,
+      subdivision,
+      completedAt,
+      birthdate,
       oldSecret,
       newSecret
     );
+    console.log("oalProof");
+    console.log(oalProof);
 
     // lobby3Proof
     const leaf = await createLeaf(
       serverAddress,
       newSecret,
       creds.countryCode,
-      creds.subdivision,
-      creds.completedAt,
-      creds.birthdate
+      subdivision,
+      completedAt,
+      birthdate
     );
     const leavesFromContract = []; // TODO: Get leaves from merkle tree smart contract
     const leaves = [...leavesFromContract, leaf];
@@ -64,9 +75,9 @@ const Proofs = () => {
     const lob3Proof = await lobby3Proof(
       serverAddress,
       creds.countryCode,
-      creds.subdivision,
-      creds.completedAt,
-      creds.birthdate,
+      subdivision,
+      completedAt,
+      birthdate,
       newSecret,
       // root,
       serializedMerkleProof[0],
@@ -77,14 +88,18 @@ const Proofs = () => {
       // indices
       serializedMerkleProof[3]
     );
+    console.log("lob3Proof");
+    console.log(lob3Proof);
     // TODO: Call smart contracts
     // contract.updateLeaf(oalProof)
     // contract.proveResidence(lob3Proof)
   }
 
   useEffect(() => {
+    console.log("entered useEffect");
     if (credentials) return;
     const proofType = params.proofType;
+    console.log(`proofType: ${proofType}`);
     if (proofType === "lobby3") {
       handleLobby3Proofs();
     }

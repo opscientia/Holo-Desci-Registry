@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { initialize } from "zokrates-js";
 import { IncrementalMerkleTree } from "@zk-kit/incremental-merkle-tree";
-import { zkIdVerifyEndpoint, serverAddress } from "../constants/server";
+import { zkIdVerifyEndpoint, serverAddress } from "../constants/misc";
 
 const poseidonCodeQuinary = `import "hashes/poseidon/poseidon" as poseidon;
 def main(field n1, field n2, field n3, field n4, field n5) -> field {
@@ -49,6 +49,90 @@ initialize().then((zokratesProvider) => {
   lobby3ProofArtifacts = zokProvider.compile(lobby3ProofCode);
   onAddLeafArtifacts = zokProvider.compile(onAddLeaf);
 });
+
+/**
+ * Convert state (e.g., "California") to a 2-byte representation of its abbreviation.
+ * @returns {string}
+ */
+export function getStateAsHexString(state) {
+  return "0x" + new TextEncoder().encode(state).toString().replaceAll(",", "");
+}
+
+/**
+ * Convert date string to 3-byte hex string with the following structure:
+ * byte 1: number of years since 1900
+ * bytes 2-3: number of days since beginning of the year
+ * @param {string} date Must be of form yyyy-mm-dd
+ */
+export function getDateAsHexString(date) {
+  const [year, month, day] = date.split("-");
+  const yearsSince1900 = parseInt(year) - 1900;
+  const daysSinceNewYear = getDaysSinceNewYear(parseInt(month), parseInt(day));
+
+  // Convert yearsSince1900 and daysSinceNewYear to hex string
+  const yearsStr = ethers.BigNumber.from([yearsSince1900])
+    .toHexString()
+    .replace("0x", "");
+  let daysStr;
+  if (daysSinceNewYear > 255) {
+    daysStr = ethers.BigNumber.from("0x01").toHexString().replace("0x", "");
+    daysStr += ethers.BigNumber.from(daysSinceNewYear - 256)
+      .toHexString()
+      .replace("0x", "");
+  } else {
+    daysStr = ethers.BigNumber.from(daysSinceNewYear).toHexString().replace("0x", "");
+    daysStr += "00";
+  }
+  return "0x" + yearsStr + daysStr;
+}
+
+function getDaysSinceNewYear(month, day) {
+  let daysSinceNewYear = day;
+  if (month == 1) {
+    return daysSinceNewYear;
+  }
+  if (month > 1) {
+    daysSinceNewYear += 31;
+  }
+  if (month > 2) {
+    if (isLeapYear(new Date().getYear())) {
+      daysSinceNewYear += 29;
+    } else {
+      daysSinceNewYear += 28;
+    }
+  }
+  if (month > 3) {
+    daysSinceNewYear += 31;
+  }
+  if (month > 4) {
+    daysSinceNewYear += 30;
+  }
+  if (month > 5) {
+    daysSinceNewYear += 31;
+  }
+  if (month > 6) {
+    daysSinceNewYear += 30;
+  }
+  if (month > 7) {
+    daysSinceNewYear += 31;
+  }
+  if (month > 8) {
+    daysSinceNewYear += 31;
+  }
+  if (month > 9) {
+    daysSinceNewYear += 30;
+  }
+  if (month > 10) {
+    daysSinceNewYear += 31;
+  }
+  if (month > 11) {
+    daysSinceNewYear += 30;
+  }
+  return daysSinceNewYear;
+}
+function isLeapYear(year) {
+  return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+}
 
 /**
  * (Forked from holo-merkle-utils)
