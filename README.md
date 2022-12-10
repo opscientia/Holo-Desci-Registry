@@ -24,3 +24,12 @@ if [ "$branch" = "master" ]; then
 	fi
 fi
 ```
+
+
+```
+git clone https://github.com/opscientia/Holo-Desci-Registry
+cd verse
+npm i --legacy-peer-deps
+npm run build
+npm run start
+```
